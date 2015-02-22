@@ -1,7 +1,9 @@
 package com.retroMachines.game.controllers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -9,155 +11,87 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.retroMachines.data.models.GlobalVariables;
-import com.retroMachines.data.models.Profile;
-import com.retroMachines.data.models.ProfileTest;
-import com.retroMachines.data.models.Setting;
-import com.retroMachines.data.models.Statistic;
 
 public class ProfileControllerTest {
 	
 	ProfileController profileController;
+	
+	private static final String NAME = "TESTUSER";
+	
+	private static final String NAME2 = "TESTUSER2";
 
 	@Before
 	public void setUp() throws Exception {
 		profileController = new ProfileController(null);
+		profileController.createProfile(NAME);
+		profileController.createProfile(NAME2);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		profileController.deleteProfile(NAME2);
+		profileController.deleteProfile(NAME);
 		profileController = null;
 	}
 	
-	/**
-	 * check if loading the profile works
-	 */
 	@Test
-	public void testLoadLastProfile() {
-		assertTrue("profile was not loaded successfully", profileController.loadLastProfile());
-	}
-	
-	/**
-	 * check if the correct profile was loaded
-	 */
-	@Test
-	public void testRightLoading() {
-		profileController.loadLastProfile();
-		assertTrue("falscher benutzer wurde geladen.", profileController.getProfileName().equals(ProfileTest.TEST_USER_IN_DB));
-		GlobalVariables gv = GlobalVariables.getSingleton();
-		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, -1);
-		assertFalse("laden des benutzers sollte scheitern", profileController.loadLastProfile());
-		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, ProfileTest.TEST_USER_IN_DB_ID);
-	}
-	
-	/**
-	 * check if two profiles with the same name can be created
-	 */
-	@Test
-	public void testDoubleUserName() {
-		profileController.createProfile("name");
-		profileController.changeActiveProfile("name");
-		assertFalse("profil mit gleichem Namen möglich", profileController.canUserBeCreated("name"));
-		profileController.changeActiveProfile("TestUser");
-		profileController.deleteProfile("name");
-	}
-	
-	/**
-	 * check if more than 5 profiles can be created
-	 */
-	@Test
-	public void testMaximumProfiles() {
-		for (int i = 0; i < ProfileController.MAX_PROFILE_NUMBER - 1; i++) {
-			// -1 assuming one test profile already exists
-			profileController.createProfile("profile " + i);
-		}
-		assertFalse("mehr als " + ProfileController.MAX_PROFILE_NUMBER + " profile möglich", profileController.canUserBeCreated("too much"));
-		for (int i = 0; i < ProfileController.MAX_PROFILE_NUMBER - 1; i++) {
-			profileController.deleteProfile("profile " + i);
-		}
-	}
-	
-	
-	@Test
-	public void testCreateDeleteProfile() {
-		profileController.createProfile("Test");
-		assertTrue("falsches profil ist aktiv", profileController.getProfileName().equals("Test"));
-		Profile profile = profileController.getProfile();
-		profileController.deleteProfile("Test");
-		assertFalse("statistic wurde nicht vernichtet", profile.getStatistic().hasRecord());
-		assertFalse("setting wurde nicht vernichtet", profile.getSetting().hasRecord());
-		assertFalse("profil wurde nicht vernichtet", profile.hasRecord());
-	}
-	
-	@Test
-	public void testChangeOnProfileCreate() {
-		profileController.loadLastProfile();
-		int prevId = profileController.getProfile().getProfileId();
-		profileController.createProfile("Luca");
-		assertFalse("profil wurde nicht gewechselt", profileController.getProfile().getProfileId() == prevId);
-		assertTrue("falscher profilname", profileController.getProfileName().equals("Luca"));
-		profileController.deleteProfile("Luca");
-	}
-	
-	@Test
-	public void testChangeProfile() {
-		profileController.loadLastProfile();
-		profileController.createProfile("Maik");
-		GlobalVariables gv = GlobalVariables.getSingleton();
-		assertFalse("db last used profile wurde nicht geändert", 
-				Integer.parseInt(gv.get(GlobalVariables.KEY_LAST_USED_PROFILE)) == ProfileTest.TEST_USER_IN_DB_ID);
-		profileController.changeActiveProfile(ProfileTest.TEST_USER_IN_DB);
-		assertTrue("db last used profile wurde nicht geändert", 
-				Integer.parseInt(gv.get(GlobalVariables.KEY_LAST_USED_PROFILE)) == ProfileTest.TEST_USER_IN_DB_ID);
-		assertTrue("falsches profil aktiv", profileController.getProfileName().equals(ProfileTest.TEST_USER_IN_DB));
-		profileController.deleteProfile("Maik");
-		assertTrue("standard user sollte aktiv sein", 
-				profileController.getProfileName().equals(ProfileTest.TEST_USER_IN_DB));
+	public void testCheckDoubleUsername() {
+		profileController.canUserBeCreated(NAME);
 	}
 	
 	@Test
 	public void testListener() {
 		MockListener listener = new MockListener();
 		profileController.addProfileChangedListener(listener);
-		profileController.createProfile("Larissa");
-		assertTrue("mock listener wurde nicht informiert", listener.callHappened);
+		profileController.createProfile("abc");
+		assertTrue("mock class wurde nicht benachrichtigt", listener.callHappened);
 		listener.callHappened = false;
-		profileController.removeProfileChangedListener(listener);
-		profileController.deleteProfile("Larissa");
-		assertFalse("mock listener wurde nicht informiert", listener.callHappened);
-		listener.callHappened = false;
+		profileController.deleteProfile("abc");
 	}
 	
-	/*
+	@Test
+	public void testChangeProfile() {
+		profileController.changeActiveProfile(NAME);
+		assertTrue("falsches profil aktiv", profileController.getProfileName().equals(NAME));
+	}
+	
 	@Test
 	public void testGetAllProfiles() {
-		String[] profiles = profileController.getAllProfiles();
-		assertTrue("zu viele profile. sollte nur eines geben", profiles.length == 1);
-		assertTrue("falsches profil an erster stelle", profiles[0].equals(TEST_USER_IN_DB));
+		String[] profileNames = profileController.getAllProfiles();
+		assertTrue("falsches profil an letzter stelle", profileNames[profileNames.length - 2].equals(NAME2));
+		assertTrue("falsches profil an letzter stelle", profileNames[profileNames.length - 1].equals(NAME));
 	}
 	
 	@Test
-	public void testGetAllProfilesWithCreate() {
-		String[] profiles = profileController.getAllProfiles();
-		assertTrue("zu viele profile. sollte nur eines geben", profiles.length == 1);
-		assertTrue("falsches profil an erster stelle", profiles[0].equals(TEST_USER_IN_DB));
-		
-		Statistic statistic = new Statistic(1);
-		Setting setting = new Setting(1);
-		Profile profile = new Profile(1, "Luca", setting, statistic);
-		
-		assertTrue("falsche anzahl an profilen", Profile.getAllProfiles().length == 2);
-		profile.destroy();
-		statistic.destroy();
-		setting.destroy();
+	public void testMaximumProfiles() {
+		String[] profileNames = profileController.getAllProfiles();
+		for (int i = profileNames.length; i < ProfileController.MAX_PROFILE_NUMBER; i++) {
+			profileController.createProfile("profil"+i);
+		}
+		assertFalse("nutzer kann erstellt werden", profileController.canUserBeCreated("abc"));
+		for (int i = profileNames.length; i < ProfileController.MAX_PROFILE_NUMBER; i++) {
+			profileController.deleteProfile("profil"+i);
+		}
 	}
 	
 	@Test
-	public void testGetHashMap() {
+	public void testDeleteProfile() {
+		profileController.createProfile("ABC");
 		HashMap<String, Integer> map = profileController.getProfileNameIdMap();
-		assertTrue("hashmap hat zu viele einträge", map.size() == 1);
-		assertTrue("falsches mapping", map.get(TEST_USER_IN_DB) == TEST_USER_IN_DB_ID);
+		assertTrue("profil existiert nicht", map.containsKey("ABC"));
+		profileController.deleteProfile("ABC");
+		map = profileController.getProfileNameIdMap();
+		assertFalse("profil existiert noch", map.containsKey("ABC"));
 	}
-	*/
+	
+	@Test
+	public void testLoadLastProfile() {
+		GlobalVariables gv = GlobalVariables.getSingleton();
+		int savedValue = Integer.parseInt(gv.get(GlobalVariables.KEY_LAST_USED_PROFILE));
+		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, -1);
+		assertFalse("letzte profil sollte nicht verfügbar sein", profileController.loadLastProfile());
+		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, savedValue);
+	}
 	
 	private class MockListener implements OnProfileChangedListener {
 		
