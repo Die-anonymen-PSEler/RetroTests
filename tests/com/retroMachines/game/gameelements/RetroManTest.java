@@ -5,20 +5,28 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.retroMachines.GdxTestRunner;
+import com.retroMachines.data.AssetManager;
 import com.retroMachines.game.gameelements.RetroMan;
+import com.retroMachines.util.Constants;
 
 @RunWith(GdxTestRunner.class)
 public class RetroManTest {
 	
 	private RetroMan retroMan;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		AssetManager.initializeWhileLoading();
+	}
 
 	@Before
 	public void setUp() throws Exception {
-		retroMan = new RetroMan();
+		retroMan = new RetroMan(Constants.TEXTURE_ANIMATION_NAMES[0]);
 	}
 
 	@After
