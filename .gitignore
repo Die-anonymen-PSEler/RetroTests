@@ -5,3 +5,6 @@ local.properties
 *.class
 
 *.class
+
+*.class
+/bin/
