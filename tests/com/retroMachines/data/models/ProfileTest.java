@@ -2,8 +2,7 @@ package com.retroMachines.data.models;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +33,11 @@ public class ProfileTest {
 	public void setUp() throws Exception {
 		testMe = new Profile(1);
 		testMe.setProfileName(TEST_USER_IN_DB);
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		testMe.destroy();
 	}
 	
 	/**

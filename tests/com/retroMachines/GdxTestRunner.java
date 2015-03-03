@@ -63,7 +63,8 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 	   }
 
 	   
-	   protected void runChild(FrameworkMethod method, RunNotifier notifier) {
+	   @Override
+	protected void runChild(FrameworkMethod method, RunNotifier notifier) {
 	      synchronized (invokeInRender) {
 	         //add for invoking in render phase, where gl context is available
 	         invokeInRender.put(method, notifier);   

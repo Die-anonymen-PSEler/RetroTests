@@ -25,6 +25,7 @@ public class StatisticTest {
 
 	@After
 	public void tearDown() throws Exception {
+		statistic.destroy();
 	}
 	
 	@Test

@@ -1,8 +1,6 @@
 package com.retroMachines.game;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,9 +8,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.headless.HeadlessFiles;
 import com.badlogic.gdx.math.Vector2;
 import com.retroMachines.GdxTestRunner;
 import com.retroMachines.data.AssetManager;
