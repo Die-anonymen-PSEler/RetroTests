@@ -3,6 +3,16 @@
 	{
 		"description": "Level das (x) darstellt",
 		"hasTutorialScreen": true,
+		"tutorialScreens" : [
+			{
+				"title" : "",
+				"img" : ""
+			},
+			{
+				"title" : "",
+				"img" : ""
+			}
+		],
 		"levelid": 1,
 		"data": 
 		{
@@ -11,19 +21,15 @@
 				{
 					"color": 2,
 					"type": "Var",
-					"posx": 20,
-					"posy": 11
+					"posx": 50,
+					"posy": 6
 				}
 			],
 
 			"tree": 
 			[
 				{
-					"color": 2,
-					"tree": 
-					[
-						
-					]
+					"tree": []
 				}
 			],
 
@@ -32,10 +38,7 @@
 				{
 					"color": 2,
 					"type": "Var",
-					"target": 
-					[
-						
-					]
+					"target": []
 				}
 			],
 
@@ -44,10 +47,7 @@
 				{
 					"color": 2,
 					"type": "Var",
-					"hint": 
-					[
-						
-					]
+					"hint": []
 				}
 			]
 		}

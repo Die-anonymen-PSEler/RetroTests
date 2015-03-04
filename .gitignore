@@ -8,3 +8,7 @@ local.properties
 
 *.class
 /bin/
+.classpath
+*.classpath
+.gradle/2.1/taskArtifacts/cache.properties.lock
+.classpath
