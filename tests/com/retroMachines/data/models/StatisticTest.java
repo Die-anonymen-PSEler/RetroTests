@@ -9,7 +9,7 @@ import org.junit.Test;
 public class StatisticTest {
 	
 	private static final int TEST_ID = 1;
-	private static final int TEST_PLAYTIME = 5;
+	private static final float TEST_PLAYTIME = 5;
 	private static final int TEST_LEVELCOMPLETED = 2;
 	private static final int TEST_STEPCOUNTER = 1337;
 	

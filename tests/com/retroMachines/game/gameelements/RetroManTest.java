@@ -65,5 +65,32 @@ public class RetroManTest {
 		retroMan.getVelocity().y = -9f;
 		assertFalse("retroman is allowed to jump", retroMan.canJump());
 	}
+	
+	@Test
+	public void testPickUpElement() {
+		MetalElement metal = new MetalElement(0);
+		retroMan.pickupElement(metal);
+		assertTrue("retroman sollte etwas tragen", retroMan.hasPickedUpElement());
+		assertTrue("das spielelement sollte das gleiche sein", retroMan.layDownElement() == metal);
+	}
 
+	@Test
+	public void testLanded() {
+		retroMan.jump();
+		assertFalse("retroman darf springen", retroMan.canJump());
+		retroMan.getVelocity().y = 0; // geschwindigkeit in y richtung auf 0 stellen
+		retroMan.landed();
+		assertTrue("retroman darf nicht springen", retroMan.canJump());
+	}
+	
+	@Test
+	public void testLandedElement() {
+		MachineElement machine = new MachineElement(0);
+		retroMan.pickupElement(machine);
+		retroMan.jump();
+		assertFalse("retroman darf nochmals springen", retroMan.canJump());
+		retroMan.getVelocity().y = 0;
+		retroMan.landed();
+		assertTrue("retroMan darf nicht springen", retroMan.canJump());
+	}
 }

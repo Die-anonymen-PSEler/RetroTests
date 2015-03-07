@@ -45,6 +45,7 @@ public class RetroLevelOneTest {
 
 	@After
 	public void tearDown() throws Exception {
+		AssetManager.reloadMap(1);
 	}
 
 	@Test
@@ -66,5 +67,9 @@ public class RetroLevelOneTest {
 		assertFalse("element ist null :(", element == null);
 	}
 	
+	@Test
+	public void testRemoveGameElement() {
+		
+	}
 
 }

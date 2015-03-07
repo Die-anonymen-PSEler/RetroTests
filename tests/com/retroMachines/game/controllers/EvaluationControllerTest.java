@@ -13,7 +13,7 @@ import com.retroMachines.GdxTestRunner;
 public class EvaluationControllerTest {
 	
 	private EvaluationController evaluationController;
-	
+	/*
 	@Before
 	public void setUp() throws Exception {
 		RetroLevel testLevel = new RetroLevel();
@@ -30,5 +30,5 @@ public class EvaluationControllerTest {
 	public void test() {
 		evaluationController
 	}
-	
+	*/
 }

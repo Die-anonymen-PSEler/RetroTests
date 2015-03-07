@@ -1,6 +1,6 @@
 package com.retroMachines.data.models;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -51,5 +51,13 @@ public class SettingTest {
 		Setting setting2 = new Setting(1);
 		assertTrue("wrong volume was written back", setting2.getVolume() == 0.2f);
 		setting2.setVolume(TEST_VOLUME); // write the old value so other tests aren't confused.
+	}
+	
+	@Test
+	public void testSetTutorialFinished() {
+		Setting setting = new Setting(TEST_ID);
+		setting.setTutorialFinished(0, true);
+		assertTrue(setting.getTutorialFinished(0));
+		setting.setTutorialFinished(0, false);
 	}
 }
