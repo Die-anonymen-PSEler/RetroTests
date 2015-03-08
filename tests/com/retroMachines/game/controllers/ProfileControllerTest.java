@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.retroMachines.data.models.GlobalVariables;
+import com.retroMachines.data.models.Profile;
 
 public class ProfileControllerTest {
 	
@@ -45,7 +46,9 @@ public class ProfileControllerTest {
 		profileController.createProfile("abc");
 		assertTrue("mock class wurde nicht benachrichtigt", listener.callHappened);
 		listener.callHappened = false;
+		profileController.removeProfileChangedListener(listener);
 		profileController.deleteProfile("abc");
+		assertFalse("mock class wurde trotzdem benachrichtigt", listener.callHappened);
 	}
 	
 	@Test
@@ -90,6 +93,36 @@ public class ProfileControllerTest {
 		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, -1);
 		assertFalse("letzte profil sollte nicht verfügbar sein", profileController.loadLastProfile());
 		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, savedValue);
+	}
+	
+	@Test
+	public void testLoadLastProfile2() {
+		GlobalVariables gv = GlobalVariables.getSingleton();
+		int savedValue = Integer.parseInt(gv.get(GlobalVariables.KEY_LAST_USED_PROFILE));
+		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, 1);
+		Profile profile = new Profile(1);
+		assertTrue("letztes profil sollte geladen sein", profileController.loadLastProfile());
+		assertTrue("falsches profil wurde geladen", profileController.getProfile().getProfileId() == profile.getProfileId());
+		gv.put(GlobalVariables.KEY_LAST_USED_PROFILE, savedValue);
+	}
+	
+	@Test
+	public void testGetProfileName() {
+		profileController. deleteProfile(NAME2);
+		profileController.deleteProfile(NAME);
+		assertTrue("es sollte kein profil mehr existieren. der test kann sonst nicht gelingen", profileController.getAllProfiles().length == 0);
+		assertTrue("profil name sollte null sein", profileController.getProfileName() == null);
+		profileController.createProfile(NAME);
+		assertTrue("falscher name", profileController.getProfileName().equals(NAME));
+		profileController.createProfile(NAME2);
+	}
+	
+	@Test
+	public void testCreateUserNotAllowed() {
+		MockListener listener = new MockListener();
+		profileController.removeProfileChangedListener(listener);
+		profileController.createProfile(NAME);
+		assertFalse("profil scheint erstellt worden zu sein", listener.callHappened);
 	}
 	
 	private class MockListener implements OnProfileChangedListener {
